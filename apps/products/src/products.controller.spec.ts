@@ -16,7 +16,7 @@ describe('ProductsController', () => {
 
   describe('root', () => {
     it('should return "Hello World!"', () => {
-      expect(productsController.getHello()).toBe('Hello World!');
+      expect(productsController.getAll()).toEqual([]);
     });
   });
 });

@@ -205,4 +205,7 @@ Once monorepo setup is working:
 
 ---
 
-If you want the full template including folder structure, Dockerfiles, and service boilerplates, ask for **"full template"**.
+
+
+
+npm install @nestjs/mongoose mongoose
