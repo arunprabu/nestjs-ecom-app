@@ -3,6 +3,7 @@ import { HttpService } from '@nestjs/axios';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Order, OrderDocument } from './schemas/order.schema';
+import { OrdersRabbitService } from './rmq/rabbitmq.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { firstValueFrom } from 'rxjs';
@@ -12,6 +13,7 @@ export class OrdersService {
   constructor(
     @InjectModel(Order.name) private orderModel: Model<OrderDocument>,
     private readonly httpService: HttpService,
+    private readonly rmqService: OrdersRabbitService,
   ) { }
 
   async create(createOrderDto: CreateOrderDto): Promise<Order | { order: Order; rejectedItems: any[] }> {
@@ -80,7 +82,20 @@ export class OrdersService {
     const saved = await created.save();
 
     if (rejectedItems.length > 0) {
+      // publish rejected event asynchronously
+      try {
+        this.rmqService.publish('ORDER_REJECTED', { order: saved, rejectedItems });
+      } catch (e) {
+        // log and ignore publish errors
+      }
       return { order: saved, rejectedItems };
+    }
+
+    // publish created event asynchronously
+    try {
+      this.rmqService.publish('ORDER_CREATED', saved);
+    } catch (e) {
+      // ignore publish errors
     }
 
     return saved;

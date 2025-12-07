@@ -4,6 +4,7 @@ import { HttpService } from '@nestjs/axios';
 import { getModelToken } from '@nestjs/mongoose';
 import { of } from 'rxjs';
 import { Order } from './schemas/order.schema';
+import { OrdersRabbitService } from './rmq/rabbitmq.service';
 
 describe('OrdersService (stock checks)', () => {
   let service: OrdersService;
@@ -18,6 +19,7 @@ describe('OrdersService (stock checks)', () => {
         OrdersService,
         { provide: getModelToken(Order.name), useValue: mockModelCtor },
         { provide: HttpService, useValue: { get: jest.fn() } },
+        { provide: OrdersRabbitService, useValue: { publish: jest.fn() } },
       ],
     }).compile();
 
@@ -36,6 +38,9 @@ describe('OrdersService (stock checks)', () => {
     expect((res as any).status).toBe('ACCEPTED');
     // ensure we attempted to update product stock
     expect(http.put).toHaveBeenCalledWith(expect.stringContaining('/products/p_good'), { stock: 4 });
+    // ensure we published an ORDER_CREATED event
+    const rmq = service['rmqService'] as any;
+    expect(rmq.publish).toHaveBeenCalledWith('ORDER_CREATED', expect.any(Object));
   });
 
   it('rejects order when any product stock insufficient', async () => {
@@ -52,6 +57,8 @@ describe('OrdersService (stock checks)', () => {
     expect((res as any).rejectedItems[0].productId).toBe('p_bad');
     // ensure we did not call PUT when insufficient stock
     expect(http.put).not.toHaveBeenCalled();
+    const rmq = service['rmqService'] as any;
+    expect(rmq.publish).toHaveBeenCalledWith('ORDER_REJECTED', expect.any(Object));
   });
 
   it('handles partial failure when PUT fails after check', async () => {
@@ -66,5 +73,7 @@ describe('OrdersService (stock checks)', () => {
     expect(res).toHaveProperty('order');
     expect((res as any).order.status).toBe('REJECTED');
     expect((res as any).rejectedItems[0].productId).toBe('p_err');
+    const rmq = service['rmqService'] as any;
+    expect(rmq.publish).toHaveBeenCalledWith('ORDER_REJECTED', expect.any(Object));
   });
 });

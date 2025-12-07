@@ -208,5 +208,14 @@ Once monorepo setup is working:
 
 
 
+Implemented docker-compose.yaml with rabbitmq:4.1-management
+
+then, docker compose up -d
+
+afterwards the rabbit mq server will be up in http://localhost:15672/#/ 
+use the following login creds
+ guest / guest to login to rabbit mq server 
+
+
 
 npm install @nestjs/mongoose mongoose
