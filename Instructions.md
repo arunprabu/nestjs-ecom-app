@@ -35,6 +35,7 @@ tsconfig.json
 ## 2. Create the Root Project
 
 ```bash
+npm i -g @nestjs/cli
 nest new nestjs-ms-app
 cd nestjs-ms-app
 ```
