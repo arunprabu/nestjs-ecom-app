@@ -52,8 +52,8 @@ services:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
     ports:
-      - "5672:5672"    # AMQP protocol
-      - "15672:15672"  # Management UI
+      - "5672:5672"    # AMQP protocol - our project will connect using this port
+      - "15672:15672"  # Management UI - access via web browser
     volumes:
       - ecom-rabbitmq-data:/var/lib/rabbitmq
     networks:

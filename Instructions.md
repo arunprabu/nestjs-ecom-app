@@ -208,9 +208,12 @@ Once monorepo setup is working:
 
 
 
-Implemented docker-compose.yaml with rabbitmq:4.1-management
+Implement docker-compose.yaml with mongo and rabbitmq:4.1-management
 
-then, docker compose up -d
+then type the following cmd in cmd prompt / terminal
+```
+  docker compose up -d
+```
 
 afterwards the rabbit mq server will be up in http://localhost:15672/#/ 
 use the following login creds

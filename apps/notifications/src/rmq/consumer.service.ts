@@ -19,6 +19,8 @@ export class NotificationsConsumer implements OnModuleInit, OnModuleDestroy {
     await this.channel.consume('ORDER_CREATED', (msg) => {
       if (!msg) return;
       try {
+        // ideal place for you to send email or push notification
+        // but i am logging to console for demo purposes
         const payload = JSON.parse(msg.content.toString());
         this.logger.log(`ORDER_CREATED received: ${JSON.stringify(payload)}`);
       } catch (err) {
@@ -32,6 +34,8 @@ export class NotificationsConsumer implements OnModuleInit, OnModuleDestroy {
     await this.channel.consume('ORDER_REJECTED', (msg) => {
       if (!msg) return;
       try {
+        // ideal place for you to send email or push notification
+        // but i am logging to console for demo purposes
         const payload = JSON.parse(msg.content.toString());
         this.logger.log(`ORDER_REJECTED received: ${JSON.stringify(payload)}`);
       } catch (err) {

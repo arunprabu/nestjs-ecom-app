@@ -13,7 +13,8 @@ export class ProductsService {
   ) { }
 
   async findAll(): Promise<Product[]> {
-    return this.productModel.find().exec();
+    console.log("=========FINDING ALL PRODUCTS IN SERVICE");
+    return this.productModel.find().exec();  // similar to select * from products
   }
 
   async create(createProductDto: CreateProductDto): Promise<Product> {
