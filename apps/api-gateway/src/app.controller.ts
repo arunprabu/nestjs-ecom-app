@@ -9,47 +9,53 @@ const ORDERS_BASE = process.env.ORDERS_SERVICE_URL || 'http://localhost:3002';
 export class AppController {
   constructor(private readonly http: HttpService) { }
 
-  // Products proxy
+  // Products proxy- localhost:3000/api/products over GET method
   @Get('api/products')
   async getProducts() {
     // Forward to Products service
     const result = await firstValueFrom(
-      this.http.get('http://localhost:3001/products')
+      this.http.get(`${PRODUCTS_BASE}/products`)
     );
     return result.data;
   }
 
+  // localhost:3000/api/products/:id over GET method
   @Get('api/products/:id')
   async getProductById(@Param('id') id: string) {
     const result = await firstValueFrom(this.http.get(`${PRODUCTS_BASE}/products/${id}`));
     return result.data;
   }
 
+
+  // localhost:3000/api/products over POST method
   @Post('api/products')
   async createProduct(@Body() body: any) {
     const result = await firstValueFrom(this.http.post(`${PRODUCTS_BASE}/products`, body));
     return result.data;
   }
 
+  // localhost:3000/api/products/:id over PUT method
   @Put('api/products/:id')
   async updateProduct(@Param('id') id: string, @Body() body: any) {
     const result = await firstValueFrom(this.http.put(`${PRODUCTS_BASE}/products/${id}`, body));
     return result.data;
   }
 
+  // localhost:3000/api/products/:id over DELETE method
   @Delete('api/products/:id')
   async deleteProduct(@Param('id') id: string) {
     const result = await firstValueFrom(this.http.delete(`${PRODUCTS_BASE}/products/${id}`));
     return result.data;
   }
 
-  // Orders proxy
+  // Orders proxy // localhost:3000/api/orders over POST method
   @Post('api/orders')
   async createOrder(@Body() body: any) {
     const result = await firstValueFrom(this.http.post(`${ORDERS_BASE}/orders`, body));
     return result.data;
   }
 
+  // localhost:3000/api/orders over GET method
   @Get('api/orders')
   async getOrders(@Query() query: any) {
     const qs = Object.keys(query).length ? '?' + new URLSearchParams(query).toString() : '';
@@ -57,18 +63,21 @@ export class AppController {
     return result.data;
   }
 
+  // localhost:3000/api/orders/:id over GET method
   @Get('api/orders/:id')
   async getOrderById(@Param('id') id: string) {
     const result = await firstValueFrom(this.http.get(`${ORDERS_BASE}/orders/${id}`));
     return result.data;
   }
 
+  // localhost:3000/api/orders/:id over PUT method
   @Put('api/orders/:id')
   async updateOrder(@Param('id') id: string, @Body() body: any) {
     const result = await firstValueFrom(this.http.put(`${ORDERS_BASE}/orders/${id}`, body));
     return result.data;
   }
 
+  // localhost:3000/api/orders/:id over DELETE method
   @Delete('api/orders/:id')
   async deleteOrder(@Param('id') id: string) {
     const result = await firstValueFrom(this.http.delete(`${ORDERS_BASE}/orders/${id}`));
